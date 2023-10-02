@@ -1,4 +1,8 @@
+import os
+
+
 class Config(object):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///db.sqlite3'
+    SQLALCHEMY_DATABASE_URI = os.getenv(key='DATABASE_URI',
+                                        default='sqlite:///db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'YOUR_SECRET_KEY'
+    SECRET_KEY = os.getenv(key='SECRET_KEY', default='MY_SECRET_KEY')
