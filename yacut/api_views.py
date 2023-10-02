@@ -2,7 +2,6 @@ import re
 from urllib.parse import urljoin
 
 from flask import jsonify, request
-from werkzeug.routing import BaseConverter
 
 from . import app, db
 from .error_handlers import InvalidAPIUsage
@@ -10,15 +9,6 @@ from .models import URLMap
 from .views import get_unique_short_id
 
 PATTERN = r'[а-яА-ЯеёЁ\W]'
-
-
-class RegexConverter(BaseConverter):
-    def __init__(self, url_map, *items):
-        super(RegexConverter, self).__init__(url_map)
-        self.regex = items[0]
-
-
-app.url_map.converters['regex'] = RegexConverter
 
 
 @app.route('/api/id/<short_id>/', methods=['GET'])
