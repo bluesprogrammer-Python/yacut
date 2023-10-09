@@ -8,9 +8,11 @@ from . import app, db
 from .forms import URLMapForm
 from .models import URLMap
 
+URL_LENGTH = 6
+
 
 def get_unique_short_id():
-    random_six = ''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=6))
+    random_six = ''.join(random.choices(string.ascii_uppercase + string.digits + string.ascii_lowercase, k=URL_LENGTH))
     return random_six
 
 
@@ -27,11 +29,6 @@ def index_view():
         """Проверка на наличие короткой ссылки в БД"""
         if URLMap.query.filter_by(short=custom_id).first():
             flash(f'Имя {custom_id} уже занято!')
-            return render_template('url_creator.html', form=form)
-
-        """Проверка на превышение лимита по кол-ву символов для короткой ссылки"""
-        if len(custom_id) > 16:
-            flash('Длина короткой ссылки больше 16 символов')
             return render_template('url_creator.html', form=form)
 
         url_map = URLMap(

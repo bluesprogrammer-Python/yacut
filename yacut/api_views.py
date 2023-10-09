@@ -1,4 +1,5 @@
 import re
+from http import HTTPStatus
 from urllib.parse import urljoin
 
 from flask import jsonify, request
@@ -12,12 +13,11 @@ PATTERN = r'[а-яА-ЯеёЁ\W]'
 
 
 @app.route('/api/id/<short_id>/', methods=['GET'])
-def update_opinion(short_id):
+def get_url(short_id):
     url = URLMap.query.filter_by(short=short_id).first()
     if url is None:
-        raise InvalidAPIUsage('Указанный id не найден', 404)
-    else:
-        return jsonify({'url': url.original}), 200
+        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+    return jsonify({'url': url.original}), HTTPStatus.OK
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -44,9 +44,7 @@ def create_url():
         """Проверка короткой ссылки на содержание недопустимых символов и
         на превышение лимита по кол-ву символов"""
         check = re.search(PATTERN, short_url)
-        if check:
-            raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
-        if len(short_url) > 16:
+        if check or len(short_url) > 16:
             raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
 
     """Проверка заполнения поля с длинной ссылкой"""
@@ -65,4 +63,4 @@ def create_url():
     db.session.commit()
     absolute = request.url_root
     base_url = urljoin(absolute, short_url)
-    return jsonify({'url': url_map.original, 'short_link': base_url}), 201
+    return jsonify({'url': url_map.original, 'short_link': base_url}), HTTPStatus.CREATED
