@@ -22,23 +22,23 @@ def index_view():
     url_map = URLMap()
     if form.validate_on_submit():
         original = form.original_link.data
-        custom_id = form.custom_id.data
-        if not custom_id:
-            custom_id = get_unique_short_id()
+        short_name = form.custom_id.data
+        if not short_name:
+            short_name = get_unique_short_id()
 
         """Проверка на наличие короткой ссылки в БД"""
-        if URLMap.query.filter_by(short=custom_id).first():
-            flash(f'Имя {custom_id} уже занято!')
+        if URLMap.query.filter_by(short=short_name).first():
+            flash(f'Имя {short_name} уже занято.')
             return render_template('url_creator.html', form=form)
 
         url_map = URLMap(
             original=original,
-            short=custom_id
+            short=short_name
         )
         db.session.add(url_map)
         db.session.commit()
         absolute = request.url_root
-        base_url = urljoin(absolute, custom_id)
+        base_url = urljoin(absolute, short_name)
         flash(Markup(f'Ваша новая ссылка готова: <a href="{base_url}">{base_url}</a>'))
     return render_template('url_creator.html', form=form, id=url_map.id)
 
