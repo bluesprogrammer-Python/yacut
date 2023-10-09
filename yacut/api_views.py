@@ -53,7 +53,7 @@ def create_url():
 
     """Проверка наличия короткой ссылки в БД"""
     if URLMap.query.filter_by(short=short_url).first():
-        raise InvalidAPIUsage(f'Имя "{short_url}" уже занято.')
+        raise InvalidAPIUsage(f'Имя "{short_url}" уже занято!')
 
     url_map = URLMap(
         original=long_url,

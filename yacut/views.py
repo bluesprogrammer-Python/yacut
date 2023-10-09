@@ -28,7 +28,7 @@ def index_view():
 
         """Проверка на наличие короткой ссылки в БД"""
         if URLMap.query.filter_by(short=short_name).first():
-            flash(f'Имя {short_name} уже занято.')
+            flash(f'Имя {short_name} уже занято!')
             return render_template('url_creator.html', form=form)
 
         url_map = URLMap(
