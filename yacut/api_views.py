@@ -9,7 +9,8 @@ from .error_handlers import InvalidAPIUsage
 from .models import URLMap
 from .views import get_unique_short_id
 
-PATTERN = r'[а-яА-ЯеёЁ\W]'
+PATTERN_LETTERS = r'[а-яА-ЯеёЁ\W]'
+PATTERN_LENGHT = r'^\w{17,}'
 
 
 @app.route('/api/id/<short_id>/', methods=['GET'])
@@ -43,8 +44,9 @@ def create_url():
 
         """Проверка короткой ссылки на содержание недопустимых символов и
         на превышение лимита по кол-ву символов"""
-        check = re.search(PATTERN, short_url)
-        if check or len(short_url) > 16:
+        check_letters = re.search(PATTERN_LETTERS, short_url)
+        check_length = re.search(PATTERN_LENGHT, short_url)
+        if check_letters or check_length:
             raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки')
 
     """Проверка заполнения поля с длинной ссылкой"""
